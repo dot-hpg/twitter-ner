@@ -1,0 +1,11 @@
+.git
+.venv
+data
+notebooks
+outputs
+report
+src
+tools
+models/bilstm_crf
+*.pdf
+**/__pycache__

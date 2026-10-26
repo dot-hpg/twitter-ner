@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Twitter NER Report</title>
+<style>
+:root{--blue:#1D9BF0;--ink:#0F1419;--muted:#536471;--line:#E1E8ED;--soft:#F5F8FA;--pink:#F91880;--green:#00BA7C}
+@page{size:A4;margin:16mm 14mm 16mm 14mm;
+  @bottom-left{content:"Twitter NER — BiLSTM-CRF & BERT  |  {{author}}";font:8pt "Segoe UI",Arial,sans-serif;color:#8899A6}
+  @bottom-right{content:"Page " counter(page) " of " counter(pages);font:8pt "Segoe UI",Arial,sans-serif;color:#8899A6}}
+@page cover{margin:0;@bottom-left{content:none}@bottom-right{content:none}}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:"Segoe UI",Arial,sans-serif;font-size:9.6pt;line-height:1.5;color:var(--ink);margin:0;background:#fff}
+h1,h2,h3{line-height:1.25;break-after:avoid}
+h1{font-size:20pt;margin:0 0 8px}
+h2{font-size:13.5pt;margin:20px 0 6px;padding-bottom:4px;border-bottom:2px solid var(--line)}
+h3{font-size:11pt;margin:14px 0 4px;color:#14171A}
+p{margin:5px 0}
+a{color:var(--blue);text-decoration:none}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:8.6pt;background:var(--soft);padding:0 3px;border-radius:3px}
+pre{margin:0}
+.page-break{break-before:page}
+/* ---------- cover ---------- */
+.cover{page:cover;height:297mm;width:210mm;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#0F1419 0%,#15202B 55%,#0d4f7c 100%);color:#fff;padding:26mm 20mm}
+.cover .tag{display:inline-block;font-size:9pt;letter-spacing:.14em;text-transform:uppercase;color:#8ECDF8;
+  border:1px solid #2F5F80;border-radius:20px;padding:4px 12px}
+.cover h1{font-size:34pt;font-weight:700;margin:22mm 0 4mm;line-height:1.08}
+.cover h1 span{color:var(--blue)}
+.cover .sub{font-size:13pt;color:#C9D6DF;max-width:150mm}
+.cover .tweet{margin:16mm 0 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:12px 16px;font-size:11pt;max-width:160mm}
+.cover .tweet b{border-radius:4px;padding:0 4px;font-weight:600}
+.e-co{background:#1D9BF0}.e-loc{background:#00BA7C}.e-per{background:#F91880}.e-tv{background:#7856FF}
+.cover .tweet small{display:block;margin-top:6px;color:#8899A6;font-size:8.5pt}
+.kpis{display:flex;gap:10px;margin-top:14mm}
+.kpi{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px}
+.kpi .v{font-size:22pt;font-weight:700;color:#fff}.kpi .l{font-size:8.5pt;color:#AAB8C2;text-transform:uppercase;letter-spacing:.06em}
+.cover .meta{position:absolute;bottom:22mm;left:20mm;right:20mm;display:flex;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.18);padding-top:10px;font-size:10pt;color:#C9D6DF}
+.cover .meta b{color:#fff;display:block;font-size:11.5pt}
+/* ---------- body blocks ---------- */
+.toc ol{padding-left:18px;margin:6px 0}.toc li{margin:3px 0}
+.toc li span{color:var(--muted)}
+.callout{border-left:4px solid var(--blue);background:#F0F8FE;padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.card{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:#fff}
+.card .v{font-size:17pt;font-weight:700;color:var(--blue)}.card .l{font-size:8pt;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.card.dark .v{color:var(--ink)}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:8.4pt;break-inside:auto}
+th{background:var(--ink);color:#fff;font-weight:600;text-align:left;padding:4px 6px}
+td{padding:3.5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#FAFCFD}
+tr{break-inside:avoid}
+table.data tr.sel td{background:#E8F5FE;font-weight:700;color:#0b4f80}
+.md{margin:4px 0}
+.md h1.part{font-size:19pt;color:#fff;background:linear-gradient(90deg,#0F1419,#15405f);margin:0 0 10px;
+  padding:14px 16px;border-radius:8px;break-before:page}
+.md h2{color:var(--ink)}.md h2::before{content:"";display:inline-block;width:6px;height:15px;background:var(--blue);
+  border-radius:2px;margin-right:8px;vertical-align:-2px}
+.md table{font-size:8.4pt}
+.md pre code,.md pre{background:var(--soft);display:block;padding:8px 10px;border-radius:6px;font-size:8.2pt;white-space:pre-wrap}
+/* notebook cells */
+.cell{margin:7px 0 9px}
+.cin{display:flex;gap:6px;align-items:flex-start;break-inside:auto}
+.num{font:7.5pt Consolas,monospace;color:#8899A6;min-width:36px;padding-top:6px;text-align:right}
+pre.code{flex:1;background:#F7F9FA;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:4px;
+  padding:6px 9px;font:7.9pt/1.42 Consolas,"Cascadia Mono",monospace;white-space:pre-wrap;word-break:break-word}
+pre.out{margin:4px 0 0 42px;font:7.8pt/1.4 Consolas,monospace;color:#22303C;white-space:pre-wrap;word-break:break-word;
+  background:#fff;border:1px dashed #D5DEE5;border-radius:4px;padding:5px 9px}
+pre.err{color:#B00020;border-color:#F4B4C0}
+.fig{margin:6px 0 0 42px;text-align:center;break-inside:avoid}.fig img{max-width:100%;max-height:118mm}
+.tbl{margin:4px 0 0 42px;overflow:hidden}
+.tbl table{font-size:7.6pt;width:auto;min-width:50%}
+.tbl th{background:#2C3640;font-size:7.6pt;padding:3px 6px}.tbl td{padding:2.5px 6px}
+.tbl thead tr th:first-child{background:#2C3640}
+.answers h2{break-before:auto;font-size:12.5pt;color:var(--ink);background:var(--soft);border:none;padding:6px 10px;border-radius:6px;margin-top:18px}
+.answers table th{background:#15405f}
+{{pygments_css}}
+</style>
+</head>
+<body>
+
+<!-- ============================== COVER ============================== -->
+<section class="cover">
+  <span class="tag">Business Case &middot; Natural Language Processing</span>
+  <h1>Twitter <span>Named Entity Recognition</span><br>BiLSTM-CRF &amp; BERT</h1>
+  <p class="sub">Recognising people, places, companies, products and more in noisy tweets — so trends can be
+    understood without depending on hashtags.</p>
+  <div class="tweet"><b class="e-co">Zendesk</b> Security Breach Affects <b class="e-co">Twitter</b>, <b class="e-co">Tumblr</b> and
+    <b class="e-co">Pinterest</b> &middot; <b class="e-co">Snapchat</b> CEO talks about breach on <b class="e-tv">Today Show</b> &middot; Made it back home to <b class="e-loc">GA</b>
+    <small>company &nbsp;&middot;&nbsp; person &nbsp;&middot;&nbsp; tvshow &nbsp;&middot;&nbsp; geo-loc — 10 fine-grained entity types, WNUT-16 Twitter corpus</small></div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">{{bert_f1}}</div><div class="l">BERT test entity-F1</div></div>
+    <div class="kpi"><div class="v">{{lstm_f1}}</div><div class="l">BiLSTM-CRF test entity-F1</div></div>
+    <div class="kpi"><div class="v">+{{gain}} pts</div><div class="l">gain from transformer</div></div>
+    <div class="kpi"><div class="v">{{n_exp}}</div><div class="l">training runs compared</div></div>
+  </div>
+  <div class="meta">
+    <div><b>{{author}}</b>Scaler Academy &middot; Business Case Submission</div>
+    <div style="text-align:right"><b>{{date}}</b>TensorFlow 2.15 &middot; Hugging Face Transformers</div>
+  </div>
+</section>
+
+<!-- ============================== CONTENTS ============================== -->
+<section class="toc">
+<h1>Contents</h1>
+<ol>
+  <li><b>Executive summary</b> <span>— problem, approach, results, recommendations</span></li>
+  <li><b>How this report maps to the evaluation criteria</b></li>
+  <li><b>Results at a glance</b> <span>— all experiments in one table</span></li>
+  <li><b>Part A — Data understanding, preprocessing &amp; BiLSTM-CRF</b> <span>(executed notebook)</span>
+    <ol><li>Loading the CoNLL data · 2. Structure analysis &amp; EDA · 3. Preprocessing &amp; TF Tokenizer · 4. Word2Vec embeddings ·
+    5. BiLSTM + CRF model · 6. Experiments, hyper-parameters &amp; early stopping · 7. Evaluation, alignment &amp; predictions · 8. Saving</li></ol></li>
+  <li><b>Part B — Fine-tuning bert-base-uncased</b> <span>(executed notebook)</span>
+    <ol><li>Data · 2. Model, config &amp; tokenizer · 3. Tokenization &amp; label alignment · 4. Joining sub-tokens · 5. Training,
+    hyper-parameters &amp; early stopping · 6. Test evaluation &amp; comparison · 7. save_pretrained · 8. Own sentences · 9. Error analysis</li></ol></li>
+  <li><b>Answers to the business-case questions (Q1 – Q9)</b></li>
+  <li><b>Conclusion, recommendations &amp; reproducibility</b></li>
+</ol>
+
+<h2 style="margin-top:22px">1. Executive summary</h2>
+{{summary}}
+
+<h2>2. How this report maps to the evaluation criteria</h2>
+<table>
+<thead><tr><th style="width:34%">Criterion (points)</th><th>Where it is addressed</th></tr></thead>
+<tbody>
+<tr><td>Problem statement, importing the data &amp; data-structure analysis (20)</td><td>Exec. summary; Q1; Part A §1 (defensive CoNLL parser, token tables), §2 (BIO integrity check, entity distributions, train/test shift, tweet &amp; entity lengths, Twitter phenomena, OOV analysis); Q2</td></tr>
+<tr><td>Correct model and tokenizer (10)</td><td>Part A §3 (TensorFlow <code>Tokenizer</code>, word + char), §4 (Word2Vec init); Part B §2 (<code>AutoConfig</code>, <code>AutoTokenizer</code>, <code>TFAutoModelForTokenClassification</code> for <code>bert-base-uncased</code>)</td></tr>
+<tr><td>Data preprocessing &amp; tokenization (30)</td><td>Part A §3 (normalisation, stratified train/val split, encoding, padding); Part B §3 (WordPiece analysis, [CLS]/[SEP], URL/@user decision, first-sub-token label alignment with assertions, dynamic padding &amp; bucketing); Q4</td></tr>
+<tr><td>Train the model (10)</td><td>Part A §5 (BiLSTM + custom TensorFlow CRF verified against brute force); Part B §5 (AdamW + warm-up fine-tuning)</td></tr>
+<tr><td>Different hyper-parameters (10)</td><td>Part A §6 (12 experiments: direction, CRF, embeddings, char features, units, dropout, LR, batch, fine-tuning) &amp; §6.1 early stopping; Part B §5 (LR, batch size, optimiser, epochs) &amp; §5.1 early stopping; Q6</td></tr>
+<tr><td>Make predictions — join sub-tokens; own sentences (20)</td><td>Part A §7 (alignment check, report, confusion matrix, own sentences); Part B §4 (sub-token → word joining + BIO repair), §6–§9 (test report, reload after <code>save_pretrained</code>, own sentences, error analysis)</td></tr>
+<tr><td>Questions</td><td>Section 6 — Q1 to Q9</td></tr>
+</tbody></table>
+
+<h2>3. Results at a glance</h2>
+<p>All scores are <b>entity-level micro precision / recall / F1</b> (seqeval, exact span + type match) on the untouched
+WNUT-16 test set (3,849 tweets). Model selection always uses the <b>validation</b> F1 (10% of the training file), never the test set.</p>
+<div class="grid">
+  <div class="card"><div class="v">{{bert_f1}}</div><div class="l">BERT test F1</div></div>
+  <div class="card"><div class="v">{{bert_p}} / {{bert_r}}</div><div class="l">BERT precision / recall</div></div>
+  <div class="card dark"><div class="v">{{lstm_f1}}</div><div class="l">BiLSTM-CRF test F1</div></div>
+  <div class="card dark"><div class="v">{{lstm_p}} / {{lstm_r}}</div><div class="l">BiLSTM-CRF precision / recall</div></div>
+</div>
+{{exp_tables}}
+</section>
+
+<!-- ============================== PART A ============================== -->
+<section>{{part_a}}</section>
+
+<!-- ============================== PART B ============================== -->
+<section>{{part_b}}</section>
+
+<!-- ============================== ANSWERS ============================== -->
+<section class="answers page-break">
+<h1>6. Answers to the business-case questions</h1>
+{{answers}}
+</section>
+
+<section class="page-break">
+<h1>7. Conclusion, recommendations &amp; reproducibility</h1>
+{{conclusion}}
+</section>
+</body>
+</html>

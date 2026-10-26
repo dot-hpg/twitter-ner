@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: twitter-ner
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ner-api-config
+  namespace: twitter-ner
+data:
+  MAX_BATCH: "32"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ner-api
+  namespace: twitter-ner
+spec:
+  type: LoadBalancer        # Docker Desktop exposes this on localhost:8080; use ClusterIP + Ingress on a cloud cluster
+  selector: {app: ner-api}
+  ports:
+    - {name: http, port: 8080, targetPort: http}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ner-api
+  namespace: twitter-ner
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: ner-api}
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: {type: Utilization, averageUtilization: 70}   # tweet volume is bursty: scale out on CPU
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ner-api
+  namespace: twitter-ner
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app: ner-api}

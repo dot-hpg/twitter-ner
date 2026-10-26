@@ -1,0 +1,33 @@
+{
+  "experiment": "E12 E6 + fine-tuned embeddings",
+  "val_F1": 0.5949820788530467,
+  "test_P": 0.4331955922865014,
+  "test_R": 0.3622228620788943,
+  "test_F1": 0.39454288850556685,
+  "per_type_f1": {
+    "movie": 0.0435,
+    "musicartist": 0.0472,
+    "product": 0.1043,
+    "other": 0.1528,
+    "tvshow": 0.1905,
+    "facility": 0.2645,
+    "sportsteam": 0.2949,
+    "company": 0.4384,
+    "person": 0.5073,
+    "geo-loc": 0.5996
+  },
+  "early_stopping": {
+    "epochs_run": {
+      "with early stopping": 28.0,
+      "without early stopping": 40.0
+    },
+    "val_F1": {
+      "with early stopping": 0.5949820788530467,
+      "without early stopping": 0.5776173285198556
+    },
+    "test_F1": {
+      "with early stopping": 0.39454288850556685,
+      "without early stopping": 0.40831408775981526
+    }
+  }
+}

@@ -1,0 +1,16 @@
+tensorflow==2.15.0
+tf-keras==2.15.0
+transformers==4.40.2
+gensim==4.3.3
+seqeval==1.2.2
+scikit-learn
+pandas
+numpy<2
+matplotlib
+seaborn
+jupyter
+nbclient
+nbformat
+mistune
+pygments
+gdown

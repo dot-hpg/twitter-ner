@@ -1,0 +1,13 @@
+services:
+  ner-api:
+    build: .
+    image: twitter-ner-api:1.0
+    ports:
+      - "8000:8000"
+    environment:
+      MAX_BATCH: "32"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+    restart: unless-stopped

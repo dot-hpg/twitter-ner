@@ -1,0 +1,17 @@
+# Environment
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Dataset (download with the command in README.md)
+data/
+
+# Trained models are large (BERT ~440 MB); notebooks recreate them
+models/
+
+# Scratch outputs from pipeline smoke tests
+outputs/smoke/
+outputs/bert_progress.log
+
+# Generated intermediate HTML (the PDF is committed)
+report/report.html
