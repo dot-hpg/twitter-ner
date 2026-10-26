@@ -19,7 +19,7 @@ Models are selected on a 10% validation split, never on the test set.
 | BiLSTM + CRF (Word2Vec) | 0.183 | 0.193 | 0.188 |
 | BiLSTM + CRF + char-CNN (Word2Vec) | 0.213 | 0.265 | 0.236 |
 | BiLSTM + CRF + char-CNN (GloVe-Twitter) | 0.479 | 0.361 | 0.412 |
-| **BERT-base-uncased, fine-tuned** | – | – | **0.437** |
+| **BERT-base-uncased, fine-tuned** | 0.432 | 0.442 | **0.437** |
 
 What mattered most: **pre-trained knowledge**. 85% of test entities never appear in the training data, so GloVe
 embeddings trained on 2B tweets beat every architectural change, and fine-tuned BERT does better still.

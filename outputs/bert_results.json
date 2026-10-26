@@ -1,0 +1,96 @@
+{
+  "experiments": [
+    {
+      "experiment": "B1 AdamW lr=5e-5 bs=16",
+      "lr": 5e-05,
+      "batch": 16,
+      "optimizer": "adamw",
+      "epochs_run": 6,
+      "best_epoch": 6,
+      "val_F1": 0.5836065573770493,
+      "test_P": 0.43190770962296005,
+      "test_R": 0.44198099625683845,
+      "test_F1": 0.43688629571652193,
+      "train_min": 78.6
+    },
+    {
+      "experiment": "B2 AdamW lr=3e-5 bs=16",
+      "lr": 3e-05,
+      "batch": 16,
+      "optimizer": "adamw",
+      "epochs_run": 5,
+      "best_epoch": 5,
+      "val_F1": 0.509933774834437,
+      "test_P": 0.3352272727272727,
+      "test_R": 0.3737402821767924,
+      "test_F1": 0.3534377127297481,
+      "train_min": 50.6
+    },
+    {
+      "experiment": "B3 AdamW lr=5e-5 bs=32",
+      "lr": 5e-05,
+      "batch": 32,
+      "optimizer": "adamw",
+      "epochs_run": 5,
+      "best_epoch": 4,
+      "val_F1": 0.4037267080745342,
+      "test_P": 0.2657087189478812,
+      "test_R": 0.3141376331701699,
+      "test_F1": 0.2879007784668163,
+      "train_min": 42.2
+    },
+    {
+      "experiment": "B4 Adam (no decay/warm-up) lr=3e-5 bs=16",
+      "lr": 3e-05,
+      "batch": 16,
+      "optimizer": "adam",
+      "epochs_run": 4,
+      "best_epoch": 4,
+      "val_F1": 0.5746268656716418,
+      "test_P": 0.44042397660818716,
+      "test_R": 0.34696228044917937,
+      "test_F1": 0.3881462393300048,
+      "train_min": 61.0
+    }
+  ],
+  "selected": "B1 AdamW lr=5e-5 bs=16",
+  "test_P": 0.43190770962296005,
+  "test_R": 0.44198099625683845,
+  "test_F1": 0.43688629571652193,
+  "per_type_f1": {
+    "tvshow": 0.0,
+    "musicartist": 0.0492,
+    "product": 0.0587,
+    "movie": 0.0678,
+    "other": 0.1967,
+    "facility": 0.2175,
+    "sportsteam": 0.3948,
+    "company": 0.5421,
+    "person": 0.6159,
+    "geo-loc": 0.6199
+  },
+  "early_stopping": {
+    "epochs_run": {
+      "with early stopping (patience 2, best weights)": 6,
+      "without early stopping (last epoch)": 6
+    },
+    "best_epoch": {
+      "with early stopping (patience 2, best weights)": 6,
+      "without early stopping (last epoch)": 6
+    },
+    "val_F1": {
+      "with early stopping (patience 2, best weights)": 0.5836065573770493,
+      "without early stopping (last epoch)": 0.5836065573770493
+    },
+    "test_F1": {
+      "with early stopping (patience 2, best weights)": 0.43688629571652193,
+      "without early stopping (last epoch)": 0.43688629571652193
+    }
+  },
+  "errors": {
+    "missed entirely (false negative)": 860,
+    "right span/overlap, wrong type": 672,
+    "spurious entity (false positive)": 570,
+    "right type, wrong boundary": 406
+  }
+}

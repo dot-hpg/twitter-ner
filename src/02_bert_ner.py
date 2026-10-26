@@ -481,11 +481,19 @@ json.dump({"experiments": bert_df.reset_index().to_dict(orient="records"), "sele
 
 # %% [markdown]
 # ## Summary of Part B
-# * Fine-tuned BERT clearly outperforms the best BiLSTM-CRF overall, with the largest gains on categories that depend on
-#   world knowledge (`company`, `product`, `musicartist`), because pre-training has already seen these names in context.
-# * The **tokenization step is the crux**: WordPiece removes the OOV problem, but labels must be re-aligned to the
-#   first sub-token and predictions joined back to words; both steps are verified with assertions.
-# * **Early stopping** selects the epoch with the best validation F1 and prevents the validation loss from drifting up
-#   as the model starts to over-fit the small (2k tweet) training set.
-# * The remaining errors are dominated by entities that are missed entirely — typical for WNUT-16, where most test
-#   entities are novel and casing cues are weak or absent.
+# * Fine-tuned BERT (B1) is the best model overall: test F1 0.437 against 0.395 for the selected BiLSTM-CRF, with
+#   precision and recall both improving. The gains are largest on frequent types with strong context cues, such as
+#   `person`, `company` and `sportsteam` (about +10 F1 points each). Rare types (`tvshow`, `movie`, `product`,
+#   `musicartist`) stay near zero for both models: a few dozen training examples are not enough, even for BERT.
+# * **The optimiser recipe matters.** AdamW with warm-up and linear decay at lr 5e-5 and batch 16 clearly beat a lower
+#   learning rate, a larger batch and plain Adam. Plain Adam reached a similar validation F1 but generalised worse on
+#   the test set (0.388).
+# * **The tokenization step is the crux.** WordPiece removes the OOV problem, but labels must be re-aligned to the
+#   first sub-token and predictions joined back to words. Both steps are verified with assertions.
+# * **Early stopping.** With the linear learning-rate decay, validation F1 kept improving through all 6 epochs of B1,
+#   so early stopping never triggered. Validation loss flattened after epoch 4 while training loss kept falling, a
+#   sign that more epochs would start to over-fit. For the runs with real early stopping (B2–B4), it acted as a
+#   safety net that would have stopped a run once validation F1 stalled.
+# * **Errors.** The largest error category is entities missed entirely (about a third), followed by correct spans
+#   with the wrong type, which is typical for WNUT-16, where most test entities are novel and the uncased model loses
+#   capitalisation cues.

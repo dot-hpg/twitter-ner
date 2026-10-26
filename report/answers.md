@@ -90,8 +90,8 @@ boundary information is encoded explicitly; span formats are tokenizer-agnostic 
    the first sub-token keeps the label, continuation pieces and special tokens get `-100` (ignored by the loss). At
    prediction time the reverse mapping joins sub-tokens back into words. Without tokenizer-aware alignment the labels
    would be shifted and training would be meaningless — we assert this alignment for every tweet.
-5. **Normalisation decisions** are part of tokenization: we replace URLs/@mentions by placeholders (never entities in
-   this dataset), which shortens BERT inputs considerably with no loss of label information.
+5. **Normalisation decisions** are part of tokenization: we replace URLs/@mentions by placeholders (almost never
+   entities in this dataset), which shortens BERT inputs considerably with no loss of label information.
 
 ## Q5. What other models can be used for this task?
 

@@ -28,8 +28,9 @@ test, and the text is noisy (URLs, @mentions, hashtags, slang, emoji).
 3. **Tokenization is the critical engineering step for BERT.** WordPiece removes the out-of-vocabulary problem, but
    it splits words into sub-tokens. Labels must be re-aligned for training, and predictions joined back to words for
    evaluation. Both steps are verified with assertions on every tweet.
-4. **Early stopping** prevented over-training (validation loss rises after a few epochs) and saved compute. With a
-   240-tweet validation set and a shifted test distribution, its effect on test F1 was small. See Q6.
+4. **Early stopping** stopped the BiLSTM-CRF 12 epochs early, after its validation loss started rising, and saved
+   about 30% of training time. With a 240-tweet validation set and a shifted test distribution, its effect on test F1
+   was small. For BERT, validation F1 kept improving through all 6 epochs, so it never triggered. See Q6.
 5. **Where models fail:** rare and open-ended types (`movie`, `tvshow`, `product`, `other`) and semantically ambiguous
    names (`musicartist ↔ person`, `sportsteam ↔ geo-loc`).
 
